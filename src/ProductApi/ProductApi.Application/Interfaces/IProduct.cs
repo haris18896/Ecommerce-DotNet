@@ -1,6 +1,7 @@
 using SharedLibrary.Interface;
 using ProductApi.Domain.Entities;
-namespace ProductApi.Infrustructure.Interfaces
+
+namespace ProductApi.Application.Interfaces
 {
     public interface IProduct : IGenericInterface<Product>
     {
