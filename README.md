@@ -314,6 +314,52 @@ dotnet sln EcommerceMicroservices.sln add src/InventoryService/**/*.csproj
 dotnet sln EcommerceMicroservices.sln add tests/InventoryService.Tests/InventoryService.Tests.csproj
 ```
 
+4. Add Refernce to Projects
+```sh
+# ===== Syntax =====
+dotnet add <PROJECT_WHICH_REFERCE_TO_BE_ADDED_TO> reference <REFERENCE_PROJECT>
+
+# ===== PRODUCTSERVICE REFERENCES =====
+dotnet add src/ProductService/ProductService.Application reference src/ProductService/ProductService.Domain
+dotnet add src/ProductService/ProductService.Infrastructure reference src/ProductService/ProductService.Application  
+dotnet add src/ProductService/ProductService.Infrastructure reference src/ProductService/ProductService.Domain
+dotnet add src/ProductService/ProductService.Presentation reference src/ProductService/ProductService.Application
+dotnet add src/ProductService/ProductService.Presentation reference src/ProductService/ProductService.Infrastructure
+
+# ===== ORDERSERVICE REFERENCES =====
+dotnet add src/OrderService/OrderService.Application reference src/OrderService/OrderService.Domain
+dotnet add src/OrderService/OrderService.Infrastructure reference src/OrderService/OrderService.Application
+dotnet add src/OrderService/OrderService.Infrastructure reference src/OrderService/OrderService.Domain  
+dotnet add src/OrderService/OrderService.Presentation reference src/OrderService/OrderService.Application
+dotnet add src/OrderService/OrderService.Presentation reference src/OrderService/OrderService.Infrastructure
+
+# ===== AUTHENTICATIONSERVICE REFERENCES =====
+dotnet add src/AuthenticationService/AuthenticationService.Application reference src/AuthenticationService/AuthenticationService.Domain
+dotnet add src/AuthenticationService/AuthenticationService.Infrastructure reference src/AuthenticationService/AuthenticationService.Application
+dotnet add src/AuthenticationService/AuthenticationService.Infrastructure reference src/AuthenticationService/AuthenticationService.Domain
+dotnet add src/AuthenticationService/AuthenticationService.Presentation reference src/AuthenticationService/AuthenticationService.Application  
+dotnet add src/AuthenticationService/AuthenticationService.Presentation reference src/AuthenticationService/AuthenticationService.Infrastructure
+
+# ===== SHARED LIBRARY REFERENCES =====
+dotnet add src/ProductService/ProductService.Application reference src/SharedLibrarySolution
+dotnet add src/ProductService/ProductService.Infrastructure reference src/SharedLibrarySolution
+dotnet add src/OrderService/OrderService.Application reference src/SharedLibrarySolution
+dotnet add src/OrderService/OrderService.Infrastructure reference src/SharedLibrarySolution
+dotnet add src/AuthenticationService/AuthenticationService.Application reference src/SharedLibrarySolution
+dotnet add src/AuthenticationService/AuthenticationService.Infrastructure reference src/SharedLibrarySolution
+
+# ===== TEST PROJECT REFERENCES =====
+dotnet add tests/ProductService.Tests reference src/ProductService/ProductService.Domain
+dotnet add tests/ProductService.Tests reference src/ProductService/ProductService.Application
+dotnet add tests/ProductService.Tests reference src/ProductService/ProductService.Infrastructure
+dotnet add tests/OrderService.Tests reference src/OrderService/OrderService.Domain
+dotnet add tests/OrderService.Tests reference src/OrderService/OrderService.Application
+dotnet add tests/OrderService.Tests reference src/OrderService/OrderService.Infrastructure
+dotnet add tests/AuthenticationService.Tests reference src/AuthenticationService/AuthenticationService.Domain
+dotnet add tests/AuthenticationService.Tests reference src/AuthenticationService/AuthenticationService.Application
+dotnet add tests/AuthenticationService.Tests reference src/AuthenticationService/AuthenticationService.Infrastructure
+```
+
 ## 🐳 Deployment
 
 ### Docker Compose (Development)
