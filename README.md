@@ -1,218 +1,181 @@
-# `🛒 .NET Ecommerce Microservices — Setup & Command Reference`
+# 🛒 .NET E-Commerce Microservices Platform
 
-This project follows a **.NET Microservices architecture** for building an Ecommerce platform.
+A production-ready **microservices-based e-commerce application** built with **ASP.NET Core Web API**, following **Clean Architecture** and **Domain-Driven Design (DDD)** principles.
 
----
+## 📋 Table of Contents
 
-## `📂 Services & Components`
-The solution will include:
+- [Overview](#-overview)
+- [Architecture](#-architecture)
+- [Project Structure](#-project-structure)
+- [Getting Started](#-getting-started)
+- [Development Commands](#-development-commands)
+- [Adding New Services](#-adding-new-services)
+- [Deployment](#-deployment)
+- [Best Practices](#-best-practices)
+- [Resources](#-resources)
 
-1. **SharedLibrarySolution** — Common reusable code (DTOs, exceptions, helpers, etc.).
-2. **ProductService** — Manages product catalog.
-3. **OrderService** — Handles orders and processing.
-4. **AuthenticationService** — User registration, login, JWT authentication.
-5. **API Gateway** — Single entry point for client requests.
-6. **Unit Testing** — Test projects for all services.
+## 🎯 Overview
 
----
+This solution demonstrates enterprise-grade microservices architecture with:
 
-## `🛠 .NET Project Creation Commands`
+- **Independent Services**: Each business domain runs as a separate service
+- **Clean Architecture**: Layered approach within each microservice
+- **Shared Libraries**: Common functionality without tight coupling  
+- **Scalable Design**: Database-per-service pattern
+- **Testing Strategy**: Comprehensive unit and integration tests
 
-### **1️⃣ Create a Web API Service**
-For microservices like ProductService, OrderService, AuthenticationService, API Gateway:
+### Core Services
 
-```sh
-dotnet new webapi -n <ServiceName>
-# Example
-dotnet new webapi -n ProductService
+| Service | Purpose | Technology |
+|---------|---------|------------|
+| **ProductService** | Product catalog management | ASP.NET Core Web API |
+| **OrderService** | Order processing & fulfillment | ASP.NET Core Web API |
+| **AuthenticationService** | User authentication & JWT tokens | ASP.NET Core Web API |
+| **ApiGateway** | Single entry point & request routing | ASP.NET Core / YARP |
+| **SharedLibrarySolution** | Common utilities & interfaces | Class Library |
+
+## 🏗 Architecture
+
+### Microservices Pattern
+Each service operates independently with its own:
+- Database instance
+- Business logic
+- API endpoints
+- Deployment lifecycle
+
+### Clean Architecture Layers
+
+Each microservice follows a 4-layer clean architecture:
+
+```
+📁 ProductService/
+├── 🎯 ProductService.Domain/        # Core business entities & rules
+├── 🔧 ProductService.Application/   # Use cases & business logic  
+├── 🗄️ ProductService.Infrastructure/ # Data access & external services
+└── 🌐 ProductService.Presentation/  # API controllers & HTTP layer
 ```
 
----
+**Layer Dependencies:**
+- **Domain**: No dependencies (pure business logic)
+- **Application**: → Domain
+- **Infrastructure**: → Application + Domain  
+- **Presentation**: → Application + Infrastructure
 
-### **2️⃣ Create a Class Library**
+### Shared Library Strategy
 
-For reusable shared code:
+The `SharedLibrarySolution` contains:
+- JWT authentication configuration
+- Base entities (`BaseEntity`, `AuditableEntity`)
+- Exception handling middleware
+- Common response models
+- Cross-cutting concerns
+- Shared constants & enums
 
-```sh
-dotnet new classlib -n <LibraryName>
-#Example
-dotnet new classlib -n SharedLibrarySolution
+> ⚠️ **Important**: Keep shared libraries minimal to prevent service coupling
+
+## 📂 Project Structure
+
+```
+ecommerce-microservices/
+├── 📁 src/
+│   ├── 📦 SharedLibrarySolution/
+│   │   ├── Common/
+│   │   ├── Exceptions/
+│   │   ├── Middleware/
+│   │   └── Models/
+│   │
+│   ├── 🛍️ ProductService/
+│   │   ├── ProductService.Domain/
+│   │   ├── ProductService.Application/
+│   │   ├── ProductService.Infrastructure/
+│   │   └── ProductService.Presentation/
+│   │
+│   ├── 📦 OrderService/
+│   │   ├── OrderService.Domain/
+│   │   ├── OrderService.Application/
+│   │   ├── OrderService.Infrastructure/
+│   │   └── OrderService.Presentation/
+│   │
+│   ├── 🔐 AuthenticationService/
+│   │   ├── AuthenticationService.Domain/
+│   │   ├── AuthenticationService.Application/
+│   │   ├── AuthenticationService.Infrastructure/
+│   │   └── AuthenticationService.Presentation/
+│   │
+│   └── 🚪 ApiGateway/
+│
+├── 📁 tests/
+│   ├── ProductService.Tests/
+│   ├── OrderService.Tests/
+│   └── AuthenticationService.Tests/
+│
+├── 📁 docker/
+│   ├── docker-compose.yml
+│   └── docker-compose.override.yml
+│
+└── 📄 README.md
 ```
 
----
+## 🚀 Getting Started
 
-### **3️⃣ Create a Console App**
+### Prerequisites
 
-For background jobs, quick tests, or CLI tools:
+- [.NET 8.0 SDK](https://dotnet.microsoft.com/download)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop)
+- [SQL Server](https://www.microsoft.com/sql-server) or [PostgreSQL](https://www.postgresql.org/)
 
-```sh
-dotnet new console -n <AppName>
-```
+### Quick Setup
 
----
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/ecommerce-microservices.git
+   cd ecommerce-microservices
+   ```
 
-### **4️⃣ Create a Worker Service**
+2. **Build the solution**
+   ```bash
+   dotnet build
+   ```
 
-For background services, event consumers, queue processing:
+3. **Run with Docker Compose**
+   ```bash
+   docker-compose up --build
+   ```
 
-```sh
-dotnet new worker -n <WorkerName>
-```
+4. **Run individual service**
+   ```bash
+   cd src/ProductService/ProductService.Presentation
+   dotnet run
+   ```
 
----
+### Manual Setup (Complete Solution)
 
-### **5️⃣ Create a Unit Test Project (xUnit)**
+```bash
+# Create solution file
+dotnet new sln -n EcommerceMicroservices
 
-For testing each service:
-
-```sh
-dotnet new xunit -n <TestProjectName>
-#Example
-dotnet new xunit -n ProductService.Tests
-```
-
----
-
-### **6️⃣ Create a Unit Test Project (NUnit)**
-
-Alternative testing framework:
-
-```sh
-dotnet new nunit -n <TestProjectName>
-```
-
----
-
-### **7️⃣ Create a gRPC Service**
-
-For high-performance inter-service communication:
-
-```sh
-dotnet new grpc -n <ServiceName>
-```
-
----
-
-### **8️⃣ Create an MVC Web App**
-
-For server-rendered pages (if needed for admin panel):
-
-```sh
-dotnet new mvc -n <AppName>
-```
-
----
-
-### **9️⃣ Create a Razor Pages Web App**
-
-Lightweight page-based web app:
-
-```sh
-dotnet new webapp -n <AppName>
-```
-
----
-
-### **🔟 Create a Blazor Server App**
-
-For interactive UIs using C# server-side rendering:
-
-```sh
-dotnet new blazorserver -n <AppName>
-```
-
----
-
-### **1️⃣1️⃣ Create a Blazor WebAssembly App**
-
-For running C# directly in the browser:
-
-```sh
-dotnet new blazorwasm -n <AppName>
-```
-
----
-
-### **1️⃣2️⃣ Create a Solution File**
-
-To group multiple projects:
-
-```sh
-dotnet new sln -n <SolutionName>
-```
-
----
-
-### **1️⃣3️⃣ Add a Project to a Solution**
-
-```sh
-dotnet sln <SolutionName>.sln add <ProjectPath>
-```
-
-**Example:**
-
-```sh
-dotnet sln Ecommerce.sln add ./src/ProductService/ProductService.csproj
-```
-
----
-
-### **1️⃣4️⃣ Run All Available Templates**
-
-```sh
-dotnet new list
-```
-
----
-
-### **1️⃣5️⃣ Search Online Templates**
-
-```sh
-dotnet new search <keyword>
-#Example:
-dotnet new search microservice
-```
-
----
-
-### **1️⃣6️⃣ Install a New Template from NuGet**
-
-```sh
-dotnet new install <PackageName>
-```
-
----
-
-## `📋 Suggested Project Structure`
-
-```css
-ecommerce-root/
-├─ src/
-│  ├─ SharedLibrarySolution/
-│  ├─ ProductService/
-│  ├─ OrderService/
-│  ├─ AuthenticationService/
-│  ├─ ApiGateway/
-├─ tests/
-│  ├─ ProductService.Tests/
-│  ├─ OrderService.Tests/
-│  ├─ AuthenticationService.Tests/
-└─ README.md
-```
-
----
-
-## `🚀 Quick Start — Creating the Whole Solution`
-
-```sh
-# Create solution
-dotnet new sln -n Ecommerce
-
-# Create projects
+# Create shared library
 dotnet new classlib -n SharedLibrarySolution -o src/SharedLibrarySolution
-dotnet new webapi -n ProductService -o src/ProductService
-dotnet new webapi -n OrderService -o src/OrderService
-dotnet new webapi -n AuthenticationService -o src/AuthenticationService
+
+# Create ProductService with Clean Architecture
+dotnet new classlib -n ProductService.Domain -o src/ProductService/ProductService.Domain
+dotnet new classlib -n ProductService.Application -o src/ProductService/ProductService.Application  
+dotnet new classlib -n ProductService.Infrastructure -o src/ProductService/ProductService.Infrastructure
+dotnet new webapi -n ProductService.Presentation -o src/ProductService/ProductService.Presentation
+
+# Create OrderService
+dotnet new classlib -n OrderService.Domain -o src/OrderService/OrderService.Domain
+dotnet new classlib -n OrderService.Application -o src/OrderService/OrderService.Application
+dotnet new classlib -n OrderService.Infrastructure -o src/OrderService/OrderService.Infrastructure  
+dotnet new webapi -n OrderService.Presentation -o src/OrderService/OrderService.Presentation
+
+# Create AuthenticationService
+dotnet new classlib -n AuthenticationService.Domain -o src/AuthenticationService/AuthenticationService.Domain
+dotnet new classlib -n AuthenticationService.Application -o src/AuthenticationService/AuthenticationService.Application
+dotnet new classlib -n AuthenticationService.Infrastructure -o src/AuthenticationService/AuthenticationService.Infrastructure
+dotnet new webapi -n AuthenticationService.Presentation -o src/AuthenticationService/AuthenticationService.Presentation
+
+# Create API Gateway
 dotnet new webapi -n ApiGateway -o src/ApiGateway
 
 # Create test projects
@@ -220,28 +183,230 @@ dotnet new xunit -n ProductService.Tests -o tests/ProductService.Tests
 dotnet new xunit -n OrderService.Tests -o tests/OrderService.Tests
 dotnet new xunit -n AuthenticationService.Tests -o tests/AuthenticationService.Tests
 
-# Add projects to solution
-dotnet sln Ecommerce.sln add src/**/**/*.csproj
-dotnet sln Ecommerce.sln add tests/**/**/*.csproj
+# Add all projects to solution
+dotnet sln EcommerceMicroservices.sln add src/**/**/*.csproj
+dotnet sln EcommerceMicroservices.sln add tests/**/*.csproj
 ```
+
+## 🛠 Development Commands
+
+### .NET Project Templates
+
+| Command | Purpose | Example |
+|---------|---------|---------|
+| `dotnet new webapi -n <Name>` | Web API service | `dotnet new webapi -n ProductService.Presentation` |
+| `dotnet new classlib -n <Name>` | Class library | `dotnet new classlib -n ProductService.Domain` |
+| `dotnet new console -n <Name>` | Console application | `dotnet new console -n DataMigration` |
+| `dotnet new worker -n <Name>` | Background service | `dotnet new worker -n EventProcessor` |
+| `dotnet new xunit -n <Name>` | Unit test project | `dotnet new xunit -n ProductService.Tests` |
+| `dotnet new nunit -n <Name>` | NUnit test project | `dotnet new nunit -n OrderService.Tests` |
+| `dotnet new grpc -n <Name>` | gRPC service | `dotnet new grpc -n ProductService.Grpc` |
+
+### Specialized Templates
+
+| Command | Purpose |
+|---------|---------|
+| `dotnet new mvc -n <Name>` | MVC web application |
+| `dotnet new webapp -n <Name>` | Razor Pages application |
+| `dotnet new blazorserver -n <Name>` | Blazor Server application |
+| `dotnet new blazorwasm -n <Name>` | Blazor WebAssembly application |
+
+### Solution Management
+
+```bash
+# Create solution
+dotnet new sln -n <SolutionName>
+
+# Add projects to solution  
+dotnet sln <Solution>.sln add <ProjectPath>
+
+# Remove project from solution
+dotnet sln <Solution>.sln remove <ProjectPath>
+
+# List all projects in solution
+dotnet sln <Solution>.sln list
+```
+
+### Template Discovery
+
+```bash
+# List available templates
+dotnet new list
+
+# Search online templates
+dotnet new search microservice
+
+# Install template from NuGet
+dotnet new install <PackageName>
+
+# Uninstall template
+dotnet new uninstall <PackageName>
+```
+
+## 🔧 Adding New Services
+
+To add a new service (e.g., `InventoryService`):
+
+### 1. Create Project Structure
+
+```bash
+# Create the 4-layer clean architecture
+dotnet new classlib -n InventoryService.Domain -o src/InventoryService/InventoryService.Domain
+dotnet new classlib -n InventoryService.Application -o src/InventoryService/InventoryService.Application
+dotnet new classlib -n InventoryService.Infrastructure -o src/InventoryService/InventoryService.Infrastructure
+dotnet new webapi -n InventoryService.Presentation -o src/InventoryService/InventoryService.Presentation
+
+# Create test project
+dotnet new xunit -n InventoryService.Tests -o tests/InventoryService.Tests
+```
+
+### 2. Configure Project References
+
+```bash
+# Application layer references Domain
+dotnet add src/InventoryService/InventoryService.Application reference src/InventoryService/InventoryService.Domain
+
+# Infrastructure layer references Application and Domain
+dotnet add src/InventoryService/InventoryService.Infrastructure reference src/InventoryService/InventoryService.Application
+dotnet add src/InventoryService/InventoryService.Infrastructure reference src/InventoryService/InventoryService.Domain
+
+# Presentation layer references Application and Infrastructure
+dotnet add src/InventoryService/InventoryService.Presentation reference src/InventoryService/InventoryService.Application
+dotnet add src/InventoryService/InventoryService.Presentation reference src/InventoryService/InventoryService.Infrastructure
+
+# Add SharedLibrarySolution reference where needed
+dotnet add src/InventoryService/InventoryService.Application reference src/SharedLibrarySolution
+dotnet add src/InventoryService/InventoryService.Infrastructure reference src/SharedLibrarySolution
+```
+
+### 3. Add to Solution
+
+```bash
+dotnet sln EcommerceMicroservices.sln add src/InventoryService/**/*.csproj
+dotnet sln EcommerceMicroservices.sln add tests/InventoryService.Tests/InventoryService.Tests.csproj
+```
+
+## 🐳 Deployment
+
+### Docker Compose (Development)
+
+```bash
+# Build and start all services
+docker-compose up --build
+
+# Start in detached mode
+docker-compose up -d
+
+# View logs
+docker-compose logs -f <service-name>
+
+# Stop all services
+docker-compose down
+```
+
+### Individual Service Deployment
+
+```bash
+# Build Docker image
+docker build -t productservice:latest -f src/ProductService/ProductService.Presentation/Dockerfile .
+
+# Run container
+docker run -p 8001:80 --name productservice productservice:latest
+```
+
+## 💡 Best Practices
+
+### Architecture Guidelines
+
+- **Single Responsibility**: Each microservice handles one business domain
+- **Database Per Service**: Avoid shared databases between services
+- **API Contracts**: Use versioning and maintain backward compatibility
+- **Event-Driven Communication**: Use message queues for service-to-service communication
+- **Circuit Breaker Pattern**: Implement resilience patterns for external calls
+
+### Code Organization
+
+- **Domain Layer**: Keep pure business logic, no external dependencies
+- **Application Layer**: Use CQRS with MediatR for complex business operations  
+- **Infrastructure Layer**: Repository pattern with Entity Framework Core
+- **Presentation Layer**: Thin controllers that delegate to application services
+
+### Shared Library Strategy
+
+✅ **Include in Shared Library:**
+- Common DTOs and models
+- Authentication/authorization logic
+- Exception handling middleware
+- Utility functions and extensions
+- Cross-cutting concerns
+
+❌ **Avoid in Shared Library:**
+- Business-specific logic
+- Domain entities
+- Service implementations
+- Heavy dependencies
+
+### Testing Strategy
+
+- **Unit Tests**: Test business logic in isolation
+- **Integration Tests**: Test API endpoints and data access
+- **Contract Tests**: Verify service contracts
+- **End-to-End Tests**: Test complete user scenarios
+
+## 🔗 Technology Stack
+
+| Layer | Technologies |
+|-------|-------------|
+| **API Framework** | ASP.NET Core 8.0, Web API |
+| **Data Access** | Entity Framework Core, SQL Server/PostgreSQL |
+| **Authentication** | JWT Bearer Tokens, ASP.NET Core Identity |
+| **API Gateway** | YARP (Yet Another Reverse Proxy) |
+| **Message Queue** | RabbitMQ, Azure Service Bus |
+| **Caching** | Redis, In-Memory Cache |
+| **Logging** | Serilog, Application Insights |
+| **Testing** | xUnit, Moq, FluentAssertions |
+| **Containerization** | Docker, Docker Compose |
+
+## 📚 Resources
+
+### Documentation
+- [Clean Architecture by Robert C. Martin](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
+- [Microsoft .NET Microservices Guide](https://docs.microsoft.com/en-us/dotnet/architecture/microservices/)
+- [Domain-Driven Design Reference](https://domainlanguage.com/ddd/reference/)
+
+### Tools & Libraries
+- [MediatR](https://github.com/jbogard/MediatR) - CQRS and Mediator pattern
+- [AutoMapper](https://automapper.org/) - Object-to-object mapping
+- [FluentValidation](https://fluentvalidation.net/) - Input validation
+- [Polly](https://github.com/App-vNext/Polly) - Resilience patterns
+
+## ✅ Benefits of This Architecture
+
+| Benefit | Description |
+|---------|-------------|
+| **Scalability** | Scale services independently based on demand |
+| **Maintainability** | Clear separation of concerns and dependencies |
+| **Testability** | Easy unit testing with dependency injection |
+| **Flexibility** | Technology diversity across services |
+| **Reliability** | Fault isolation prevents cascade failures |
+| **Team Autonomy** | Teams can work independently on services |
 
 ---
 
-## `💡 Notes`
+## 🤝 Contributing
 
-* Keep **SharedLibrarySolution** minimal to avoid tight coupling.
-* Use **database-per-service** pattern for microservices.
-* Consider using **Docker** and `docker-compose` for local dev with RabbitMQ and databases.
-* API Gateway can be implemented with **YARP** or **Ocelot**.
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-```
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-This preserves the **exact "sh / css" code block style** you wanted while keeping it clean and copy-paste friendly.  
-
-If you want, I can now **add a visual architecture diagram** to this README so it’s also a quick onboarding reference for new devs. That would make this document a full **developer handbook**.  
-
-Do you want me to add that diagram next?
-```
----
+**Author:** Haris_Ahmad  
+**Version:** 1.0.0  
+**Last Updated:** August 2025
