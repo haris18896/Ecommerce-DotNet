@@ -1,10 +1,10 @@
-# 🛒 .NET Ecommerce Microservices — Setup & Command Reference
+# `🛒 .NET Ecommerce Microservices — Setup & Command Reference`
 
 This project follows a **.NET Microservices architecture** for building an Ecommerce platform.
 
 ---
 
-## 📂 Services & Components
+## `📂 Services & Components`
 The solution will include:
 
 1. **SharedLibrarySolution** — Common reusable code (DTOs, exceptions, helpers, etc.).
@@ -16,7 +16,7 @@ The solution will include:
 
 ---
 
-## 🛠 .NET Project Creation Commands
+## `🛠 .NET Project Creation Commands`
 
 ### **1️⃣ Create a Web API Service**
 For microservices like ProductService, OrderService, AuthenticationService, API Gateway:
@@ -183,7 +183,7 @@ dotnet new install <PackageName>
 
 ---
 
-## 📋 Suggested Project Structure
+## `📋 Suggested Project Structure`
 
 ```css
 ecommerce-root/
@@ -202,7 +202,7 @@ ecommerce-root/
 
 ---
 
-## 🚀 Quick Start — Creating the Whole Solution
+## `🚀 Quick Start — Creating the Whole Solution`
 
 ```sh
 # Create solution
@@ -227,7 +227,7 @@ dotnet sln Ecommerce.sln add tests/**/**/*.csproj
 
 ---
 
-## 💡 Notes
+## `💡 Notes`
 
 * Keep **SharedLibrarySolution** minimal to avoid tight coupling.
 * Use **database-per-service** pattern for microservices.
@@ -244,3 +244,6 @@ If you want, I can now **add a visual architecture diagram** to this README so i
 
 Do you want me to add that diagram next?
 ```
+---
+
+# `SharedLibrary`
