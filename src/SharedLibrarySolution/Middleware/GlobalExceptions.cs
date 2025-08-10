@@ -1,4 +1,10 @@
-namespace Ecommerce.SharedLibrary.Middleware
+using System.Net;
+using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using SharedLibrarySolution.Logger;
+
+namespace SharedLibrary.Middleware
 {
     public class GlobalException(RequestDelegate next)
     {

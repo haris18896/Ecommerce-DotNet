@@ -1,4 +1,7 @@
-namespace Ecommerce.SharedLibrary.Interface
+using SharedLibrarySolution.Responses;
+using System.Linq.Expressions;
+
+namespace SharedLibrarySolution.Interface
 {
     public interface IGenericInterface<T> where T : class
     {

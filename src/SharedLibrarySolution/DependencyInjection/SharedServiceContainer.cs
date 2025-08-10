@@ -1,8 +1,15 @@
-namespace Ecommerce.SharedLibrary.DependencyInjection
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
+using Serilog;
+using SharedLibrary.Middleware;
+
+namespace SharedLibrary.DependencyInjection
 {
     public static class SharedServiceContainer
     {
-        public static IServiceCollection AddSharedServices(this IServiceCollection services, IConfiguration configuration) where TContext : DbContext
+        public static IServiceCollection AddSharedServices<TContext>(this IServiceCollection services, IConfiguration configuration, string fileName) where TContext : DbContext
         {
             // Add Generic Database Context
             services.AddDbContext<TContext>(option => option.UseSqlServer(

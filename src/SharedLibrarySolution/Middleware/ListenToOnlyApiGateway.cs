@@ -1,4 +1,9 @@
-namespace Ecommerce.SharedLibrary.Middleware
+
+using Microsoft.AspNetCore.Http;
+using System.Linq;
+
+
+namespace SharedLibrary.Middleware
 {
     public class ListenToOnlyApiGateway(RequestDelegate next)
     {

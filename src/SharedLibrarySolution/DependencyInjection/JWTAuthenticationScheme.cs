@@ -1,7 +1,11 @@
-using Microsoft.Extensions.DependencyInjection;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
-namespace Ecommerce.SharedLibrary.DependencyInjection
+
+namespace SharedLibrary.DependencyInjection
 {
     public static class JWTAuthenticationScheme
     {
@@ -14,7 +18,7 @@ namespace Ecommerce.SharedLibrary.DependencyInjection
                 string issuer = configuration.GetSection("authentication:issuer").Value!;
                 string audience = configuration.GetSection("authentication:audience").Value!;
                 options.RequireHttpsMetadata = false;
-                options.Savetoken = true;
+                options.SaveToken = true;
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
