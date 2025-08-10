@@ -120,7 +120,7 @@ ecommerce-microservices/
 
 ### Prerequisites
 
-- [.NET 8.0 SDK](https://dotnet.microsoft.com/download)
+- [.NET 9.0 SDK](https://dotnet.microsoft.com/download)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop)
 - [SQL Server](https://www.microsoft.com/sql-server) or [PostgreSQL](https://www.postgresql.org/)
 
@@ -183,9 +183,37 @@ dotnet new xunit -n ProductService.Tests -o tests/ProductService.Tests
 dotnet new xunit -n OrderService.Tests -o tests/OrderService.Tests
 dotnet new xunit -n AuthenticationService.Tests -o tests/AuthenticationService.Tests
 
+....................................................................................................................................................................................................................................
+
 # Add all projects to solution
-dotnet sln EcommerceMicroservices.sln add src/**/**/*.csproj
-dotnet sln EcommerceMicroservices.sln add tests/**/*.csproj
+# Add shared library
+dotnet sln EcommerceMicroservices.sln add src/SharedLibrarySolution/SharedLibrarySolution.csproj
+
+# Add ProductService projects
+dotnet sln EcommerceMicroservices.sln add src/ProductService/ProductService.Domain/ProductService.Domain.csproj
+dotnet sln EcommerceMicroservices.sln add src/ProductService/ProductService.Application/ProductService.Application.csproj
+dotnet sln EcommerceMicroservices.sln add src/ProductService/ProductService.Infrastructure/ProductService.Infrastructure.csproj
+dotnet sln EcommerceMicroservices.sln add src/ProductService/ProductService.Presentation/ProductService.Presentation.csproj
+
+# Add OrderService projects
+dotnet sln EcommerceMicroservices.sln add src/OrderService/OrderService.Domain/OrderService.Domain.csproj
+dotnet sln EcommerceMicroservices.sln add src/OrderService/OrderService.Application/OrderService.Application.csproj
+dotnet sln EcommerceMicroservices.sln add src/OrderService/OrderService.Infrastructure/OrderService.Infrastructure.csproj
+dotnet sln EcommerceMicroservices.sln add src/OrderService/OrderService.Presentation/OrderService.Presentation.csproj
+
+# Add AuthenticationService projects
+dotnet sln EcommerceMicroservices.sln add src/AuthenticationService/AuthenticationService.Domain/AuthenticationService.Domain.csproj
+dotnet sln EcommerceMicroservices.sln add src/AuthenticationService/AuthenticationService.Application/AuthenticationService.Application.csproj
+dotnet sln EcommerceMicroservices.sln add src/AuthenticationService/AuthenticationService.Infrastructure/AuthenticationService.Infrastructure.csproj
+dotnet sln EcommerceMicroservices.sln add src/AuthenticationService/AuthenticationService.Presentation/AuthenticationService.Presentation.csproj
+
+# Add API Gateway
+dotnet sln EcommerceMicroservices.sln add src/ApiGateway/ApiGateway.csproj
+
+# Add test projects
+dotnet sln EcommerceMicroservices.sln add tests/ProductService.Tests/ProductService.Tests.csproj
+dotnet sln EcommerceMicroservices.sln add tests/OrderService.Tests/OrderService.Tests.csproj
+dotnet sln EcommerceMicroservices.sln add tests/AuthenticationService.Tests/AuthenticationService.Tests.csproj
 ```
 
 ## 🛠 Development Commands
@@ -357,7 +385,7 @@ docker run -p 8001:80 --name productservice productservice:latest
 
 | Layer | Technologies |
 |-------|-------------|
-| **API Framework** | ASP.NET Core 8.0, Web API |
+| **API Framework** | ASP.NET Core 9.0, Web API |
 | **Data Access** | Entity Framework Core, SQL Server/PostgreSQL |
 | **Authentication** | JWT Bearer Tokens, ASP.NET Core Identity |
 | **API Gateway** | YARP (Yet Another Reverse Proxy) |
@@ -401,12 +429,7 @@ docker run -p 8001:80 --name productservice productservice:latest
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
-
-**Author:** Haris_Ahmad  
+**Author:** haris18896  
 **Version:** 1.0.0  
 **Last Updated:** August 2025
