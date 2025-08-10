@@ -245,5 +245,3 @@ If you want, I can now **add a visual architecture diagram** to this README so i
 Do you want me to add that diagram next?
 ```
 ---
-
-# `SharedLibrary`
