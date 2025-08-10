@@ -36,7 +36,7 @@ This shared library provides **4 main features**:
 
 ### Step 1: Install Required Packages
 
-In your SharedLibrary project folder (`src/SharedLibrarySolution`), run:
+In your SharedLibrary project folder (`src/SharedLibrary`), run:
 
 ```bash
 dotnet add package Microsoft.AspNetCore.Authentication.JwtBearer
@@ -56,13 +56,13 @@ dotnet build
 In your microservice projects, add a reference to this shared library:
 
 ```bash
-dotnet add reference ../SharedLibrarySolution/SharedLibrarySolution.csproj
+dotnet add reference ../SharedLibrary/SharedLibrary.csproj
 ```
 
 ## 📁 Project Structure
 
 ```
-SharedLibrarySolution/
+SharedLibrary/
 ├── Responses/
 │   └── Response.cs                 # Standard API response format
 ├── Middleware/

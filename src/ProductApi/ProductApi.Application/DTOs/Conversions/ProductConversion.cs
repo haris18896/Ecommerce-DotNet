@@ -1,7 +1,7 @@
-using ProductService.Domain.Entities;
-using ProductService.Application.DTOs;
+using ProductApi.Domain.Entities;
+using ProductApi.Application.DTOs;
 
-namespace ProductService.Application.DTOs.Conversions
+namespace ProductApi.Application.DTOs.Conversions
 {
     public static class ProductConversion
     {

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace ProductService.Application.DTOs
+namespace ProductApi.Application.DTOs
 {
     public record ProductDTO(
         int Id,

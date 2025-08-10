@@ -2,7 +2,7 @@ using System.Net;
 using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
-using SharedLibrarySolution.Logger;
+using SharedLibrary.Logger;
 
 namespace SharedLibrary.Middleware
 {

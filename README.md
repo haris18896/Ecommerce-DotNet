@@ -30,11 +30,11 @@ This solution demonstrates enterprise-grade microservices architecture with:
 
 | Service | Purpose | Technology |
 |---------|---------|------------|
-| **ProductService** | Product catalog management | ASP.NET Core Web API |
+| **ProductApi** | Product catalog management | ASP.NET Core Web API |
 | **OrderService** | Order processing & fulfillment | ASP.NET Core Web API |
 | **AuthenticationService** | User authentication & JWT tokens | ASP.NET Core Web API |
 | **ApiGateway** | Single entry point & request routing | ASP.NET Core / YARP |
-| **SharedLibrarySolution** | Common utilities & interfaces | Class Library |
+| **SharedLibrary** | Common utilities & interfaces | Class Library |
 
 ## 🏗 Architecture
 
@@ -50,11 +50,11 @@ Each service operates independently with its own:
 Each microservice follows a 4-layer clean architecture:
 
 ```
-📁 ProductService/
-├── 🎯 ProductService.Domain/        # Core business entities & rules
-├── 🔧 ProductService.Application/   # Use cases & business logic  
-├── 🗄️ ProductService.Infrastructure/ # Data access & external services
-└── 🌐 ProductService.Presentation/  # API controllers & HTTP layer
+📁 ProductApi/
+├── 🎯 ProductApi.Domain/        # Core business entities & rules
+├── 🔧 ProductApi.Application/   # Use cases & business logic  
+├── 🗄️ ProductApi.Infrastructure/ # Data access & external services
+└── 🌐 ProductApi.Presentation/  # API controllers & HTTP layer
 ```
 
 **Layer Dependencies:**
@@ -65,7 +65,7 @@ Each microservice follows a 4-layer clean architecture:
 
 ### Shared Library Strategy
 
-The `SharedLibrarySolution` contains:
+The `SharedLibrary` contains:
 - JWT authentication configuration
 - Base entities (`BaseEntity`, `AuditableEntity`)
 - Exception handling middleware
@@ -80,17 +80,17 @@ The `SharedLibrarySolution` contains:
 ```
 ecommerce-microservices/
 ├── 📁 src/
-│   ├── 📦 SharedLibrarySolution/
+│   ├── 📦 SharedLibrary/
 │   │   ├── Common/
 │   │   ├── Exceptions/
 │   │   ├── Middleware/
 │   │   └── Models/
 │   │
-│   ├── 🛍️ ProductService/
-│   │   ├── ProductService.Domain/
-│   │   ├── ProductService.Application/
-│   │   ├── ProductService.Infrastructure/
-│   │   └── ProductService.Presentation/
+│   ├── 🛍️ ProductApi/
+│   │   ├── ProductApi.Domain/
+│   │   ├── ProductApi.Application/
+│   │   ├── ProductApi.Infrastructure/
+│   │   └── ProductApi.Presentation/
 │   │
 │   ├── 📦 OrderService/
 │   │   ├── OrderService.Domain/
@@ -107,7 +107,7 @@ ecommerce-microservices/
 │   └── 🚪 ApiGateway/
 │
 ├── 📁 tests/
-│   ├── ProductService.Tests/
+│   ├── ProductApi.Tests/
 │   ├── OrderService.Tests/
 │   └── AuthenticationService.Tests/
 │
@@ -140,11 +140,11 @@ This project uses the **modern .slnx solution format** introduced in .NET 8 and 
   "solution": {
     "path": "Ecommerce.slnx",
     "projects": [
-      "src/SharedLibrarySolution/SharedLibrarySolution.csproj",
-      "src/ProductService/ProductService.Domain/ProductService.Domain.csproj",
-      "src/ProductService/ProductService.Application/ProductService.Application.csproj",
-      "src/ProductService/ProductService.Infrastructure/ProductService.Infrastructure.csproj",
-      "src/ProductService/ProductService.Presentation/ProductService.Presentation.csproj",
+      "src/SharedLibrary/SharedLibrary.csproj",
+      "src/ProductApi/ProductApi.Domain/ProductApi.Domain.csproj",
+      "src/ProductApi/ProductApi.Application/ProductApi.Application.csproj",
+      "src/ProductApi/ProductApi.Infrastructure/ProductApi.Infrastructure.csproj",
+      "src/ProductApi/ProductApi.Presentation/ProductApi.Presentation.csproj",
       "src/OrderService/OrderService.Domain/OrderService.Domain.csproj",
       "src/OrderService/OrderService.Application/OrderService.Application.csproj",
       "src/OrderService/OrderService.Infrastructure/OrderService.Infrastructure.csproj",
@@ -154,7 +154,7 @@ This project uses the **modern .slnx solution format** introduced in .NET 8 and 
       "src/AuthenticationService/AuthenticationService.Infrastructure/AuthenticationService.Infrastructure.csproj",
       "src/AuthenticationService/AuthenticationService.Presentation/AuthenticationService.Presentation.csproj",
       "src/ApiGateway/ApiGateway.csproj",
-      "tests/ProductService.Tests/ProductService.Tests.csproj",
+      "tests/ProductApi.Tests/ProductApi.Tests.csproj",
       "tests/OrderService.Tests/OrderService.Tests.csproj",
       "tests/AuthenticationService.Tests/AuthenticationService.Tests.csproj"
     ]
@@ -228,7 +228,7 @@ dotnet sln Ecommerce-classic.sln add tests/**/*.csproj
 ```
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductService.Domain", "src\ProductService\ProductService.Domain\ProductService.Domain.csproj", "{GUID}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductApi.Domain", "src\ProductApi\ProductApi.Domain\ProductApi.Domain.csproj", "{GUID}"
 EndProject
 Global
     GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -269,7 +269,7 @@ EndGlobal
 
 4. **Run individual service**
    ```bash
-   cd src/ProductService/ProductService.Presentation
+   cd src/ProductApi/ProductApi.Presentation
    dotnet run
    ```
 
@@ -281,13 +281,13 @@ dotnet new sln -n Ecommerce
 mv Ecommerce.sln Ecommerce.slnx
 
 # Create shared library
-dotnet new classlib -n SharedLibrarySolution -o src/SharedLibrarySolution
+dotnet new classlib -n SharedLibrary -o src/SharedLibrary
 
-# Create ProductService with Clean Architecture
-dotnet new classlib -n ProductService.Domain -o src/ProductService/ProductService.Domain
-dotnet new classlib -n ProductService.Application -o src/ProductService/ProductService.Application  
-dotnet new classlib -n ProductService.Infrastructure -o src/ProductService/ProductService.Infrastructure
-dotnet new webapi -n ProductService.Presentation -o src/ProductService/ProductService.Presentation
+# Create ProductApi with Clean Architecture
+dotnet new classlib -n ProductApi.Domain -o src/ProductApi/ProductApi.Domain
+dotnet new classlib -n ProductApi.Application -o src/ProductApi/ProductApi.Application  
+dotnet new classlib -n ProductApi.Infrastructure -o src/ProductApi/ProductApi.Infrastructure
+dotnet new webapi -n ProductApi.Presentation -o src/ProductApi/ProductApi.Presentation
 
 # Create OrderService
 dotnet new classlib -n OrderService.Domain -o src/OrderService/OrderService.Domain
@@ -305,7 +305,7 @@ dotnet new webapi -n AuthenticationService.Presentation -o src/AuthenticationSer
 dotnet new webapi -n ApiGateway -o src/ApiGateway
 
 # Create test projects
-dotnet new xunit -n ProductService.Tests -o tests/ProductService.Tests
+dotnet new xunit -n ProductApi.Tests -o tests/ProductApi.Tests
 dotnet new xunit -n OrderService.Tests -o tests/OrderService.Tests
 dotnet new xunit -n AuthenticationService.Tests -o tests/AuthenticationService.Tests
 
@@ -350,13 +350,13 @@ dotnet clean <Solution>.slnx
 
 | Command | Purpose | Example |
 |---------|---------|---------|
-| `dotnet new webapi -n <Name>` | Web API service | `dotnet new webapi -n ProductService.Presentation` |
-| `dotnet new classlib -n <Name>` | Class library | `dotnet new classlib -n ProductService.Domain` |
+| `dotnet new webapi -n <Name>` | Web API service | `dotnet new webapi -n ProductApi.Presentation` |
+| `dotnet new classlib -n <Name>` | Class library | `dotnet new classlib -n ProductApi.Domain` |
 | `dotnet new console -n <Name>` | Console application | `dotnet new console -n DataMigration` |
 | `dotnet new worker -n <Name>` | Background service | `dotnet new worker -n EventProcessor` |
-| `dotnet new xunit -n <Name>` | Unit test project | `dotnet new xunit -n ProductService.Tests` |
+| `dotnet new xunit -n <Name>` | Unit test project | `dotnet new xunit -n ProductApi.Tests` |
 | `dotnet new nunit -n <Name>` | NUnit test project | `dotnet new nunit -n OrderService.Tests` |
-| `dotnet new grpc -n <Name>` | gRPC service | `dotnet new grpc -n ProductService.Grpc` |
+| `dotnet new grpc -n <Name>` | gRPC service | `dotnet new grpc -n ProductApi.Grpc` |
 
 ### Specialized Templates
 
@@ -422,9 +422,9 @@ dotnet add src/InventoryService/InventoryService.Infrastructure reference src/In
 dotnet add src/InventoryService/InventoryService.Presentation reference src/InventoryService/InventoryService.Application
 dotnet add src/InventoryService/InventoryService.Presentation reference src/InventoryService/InventoryService.Infrastructure
 
-# Add SharedLibrarySolution reference where needed
-dotnet add src/InventoryService/InventoryService.Application reference src/SharedLibrarySolution
-dotnet add src/InventoryService/InventoryService.Infrastructure reference src/SharedLibrarySolution
+# Add SharedLibrary reference where needed
+dotnet add src/InventoryService/InventoryService.Application reference src/SharedLibrary
+dotnet add src/InventoryService/InventoryService.Infrastructure reference src/SharedLibrary
 
 # Test project references
 dotnet add tests/InventoryService.Tests reference src/InventoryService/InventoryService.Domain
@@ -439,11 +439,11 @@ dotnet add tests/InventoryService.Tests reference src/InventoryService/Inventory
 # dotnet add <PROJECT_TO_ADD_REFERENCE_TO> reference <REFERENCE_PROJECT>
 
 # ===== PRODUCTSERVICE REFERENCES =====
-dotnet add src/ProductService/ProductService.Application reference src/ProductService/ProductService.Domain
-dotnet add src/ProductService/ProductService.Infrastructure reference src/ProductService/ProductService.Application  
-dotnet add src/ProductService/ProductService.Infrastructure reference src/ProductService/ProductService.Domain
-dotnet add src/ProductService/ProductService.Presentation reference src/ProductService/ProductService.Application
-dotnet add src/ProductService/ProductService.Presentation reference src/ProductService/ProductService.Infrastructure
+dotnet add src/ProductApi/ProductApi.Application reference src/ProductApi/ProductApi.Domain
+dotnet add src/ProductApi/ProductApi.Infrastructure reference src/ProductApi/ProductApi.Application  
+dotnet add src/ProductApi/ProductApi.Infrastructure reference src/ProductApi/ProductApi.Domain
+dotnet add src/ProductApi/ProductApi.Presentation reference src/ProductApi/ProductApi.Application
+dotnet add src/ProductApi/ProductApi.Presentation reference src/ProductApi/ProductApi.Infrastructure
 
 # ===== ORDERSERVICE REFERENCES =====
 dotnet add src/OrderService/OrderService.Application reference src/OrderService/OrderService.Domain
@@ -460,17 +460,17 @@ dotnet add src/AuthenticationService/AuthenticationService.Presentation referenc
 dotnet add src/AuthenticationService/AuthenticationService.Presentation reference src/AuthenticationService/AuthenticationService.Infrastructure
 
 # ===== SHARED LIBRARY REFERENCES =====
-dotnet add src/ProductService/ProductService.Application reference src/SharedLibrarySolution
-dotnet add src/ProductService/ProductService.Infrastructure reference src/SharedLibrarySolution
-dotnet add src/OrderService/OrderService.Application reference src/SharedLibrarySolution
-dotnet add src/OrderService/OrderService.Infrastructure reference src/SharedLibrarySolution
-dotnet add src/AuthenticationService/AuthenticationService.Application reference src/SharedLibrarySolution
-dotnet add src/AuthenticationService/AuthenticationService.Infrastructure reference src/SharedLibrarySolution
+dotnet add src/ProductApi/ProductApi.Application reference src/SharedLibrary
+dotnet add src/ProductApi/ProductApi.Infrastructure reference src/SharedLibrary
+dotnet add src/OrderService/OrderService.Application reference src/SharedLibrary
+dotnet add src/OrderService/OrderService.Infrastructure reference src/SharedLibrary
+dotnet add src/AuthenticationService/AuthenticationService.Application reference src/SharedLibrary
+dotnet add src/AuthenticationService/AuthenticationService.Infrastructure reference src/SharedLibrary
 
 # ===== TEST PROJECT REFERENCES =====
-dotnet add tests/ProductService.Tests reference src/ProductService/ProductService.Domain
-dotnet add tests/ProductService.Tests reference src/ProductService/ProductService.Application
-dotnet add tests/ProductService.Tests reference src/ProductService/ProductService.Infrastructure
+dotnet add tests/ProductApi.Tests reference src/ProductApi/ProductApi.Domain
+dotnet add tests/ProductApi.Tests reference src/ProductApi/ProductApi.Application
+dotnet add tests/ProductApi.Tests reference src/ProductApi/ProductApi.Infrastructure
 dotnet add tests/OrderService.Tests reference src/OrderService/OrderService.Domain
 dotnet add tests/OrderService.Tests reference src/OrderService/OrderService.Application
 dotnet add tests/OrderService.Tests reference src/OrderService/OrderService.Infrastructure
@@ -517,7 +517,7 @@ docker-compose up --scale productservice=3
 
 ```bash
 # Build Docker image
-docker build -t productservice:latest -f src/ProductService/ProductService.Presentation/Dockerfile .
+docker build -t productservice:latest -f src/ProductApi/ProductApi.Presentation/Dockerfile .
 
 # Run container
 docker run -p 8001:80 --name productservice productservice:latest

@@ -1,5 +1,5 @@
 using Serilog;
-namespace SharedLibrarySolution.Logger
+namespace SharedLibrary.Logger
 {
     public static class LogException
     {

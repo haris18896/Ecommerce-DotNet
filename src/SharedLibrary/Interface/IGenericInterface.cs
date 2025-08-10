@@ -1,7 +1,7 @@
-using SharedLibrarySolution.Responses;
+using SharedLibrary.Responses;
 using System.Linq.Expressions;
 
-namespace SharedLibrarySolution.Interface
+namespace SharedLibrary.Interface
 {
     public interface IGenericInterface<T> where T : class
     {
