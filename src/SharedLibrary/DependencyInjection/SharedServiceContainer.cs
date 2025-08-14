@@ -36,7 +36,7 @@ namespace SharedLibrary.DependencyInjection
             app.UseMiddleware<GlobalException>();
 
             // Register middle ware to block all outsider API calls
-            app.UseMiddleware<ListenToOnlyApiGateway>();
+            // app.UseMiddleware<ListenToOnlyApiGateway>(); TODO: Uncomment this line when API_GateWay is created
 
             return app;
         }
