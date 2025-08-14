@@ -3,6 +3,12 @@
   <Folder Name="/src/">
     <Project Path="src/SharedLibrary/SharedLibrary.csproj" />
   </Folder>
+  <Folder Name="/src/OrderApi/">
+    <Project Path="src/OrderApi/OrderApi.Application/OrderApi.Application.csproj" />
+    <Project Path="src/OrderApi/OrderApi.Domain/OrderApi.Domain.csproj" />
+    <Project Path="src/OrderApi/OrderApi.Infrustructure/OrderApi.Infrustructure.csproj" />
+    <Project Path="src/OrderApi/OrderApi.Presentation/OrderApi.Presentation.csproj" />
+  </Folder>
   <Folder Name="/src/ProductApi/">
     <Project Path="src/ProductApi/ProductApi.Application/ProductApi.Application.csproj" />
     <Project Path="src/ProductApi/ProductApi.Domain/ProductApi.Domain.csproj" />
