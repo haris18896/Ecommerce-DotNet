@@ -113,6 +113,160 @@ src/ProductApi/
 
 ## 🔄 Data Flow & Component Interactions
 
+### 0. Complete ProductApi Service Flow
+
+```mermaid
+sequenceDiagram
+    participant Client as HTTP Client
+    participant Program as Program.cs
+    participant DI as ServiceContainer
+    participant Shared as SharedServiceContainer
+    participant Auth as JWT Auth
+    participant Logger as Serilog
+    participant Controller as ProductsController
+    participant Interface as IProduct Interface
+    participant Repo as ProductRepo
+    participant DbContext as ProductDbContext
+    participant Database as SQL Server
+    participant Conversion as ProductConversion
+
+    Note over Program,Database: 🚀 SERVICE STARTUP
+    Program->>DI: AddInfrastructureService(config)
+    DI->>Shared: AddSharedServices<ProductDbContext>()
+    Shared->>DbContext: AddDbContext<TContext>()
+    Shared->>Logger: Configure Serilog
+    Shared->>Auth: Configure JWT Authentication
+    Shared->>DI: Return configured services
+    DI->>Repo: AddScoped<IProduct, ProductRepo>()
+    DI->>Program: Return configured services
+    Program->>Program: Build application
+    Program->>DI: UseInfrastructurePolicy()
+    DI->>Shared: UseSharedPolicies()
+    Shared->>Program: Register middleware
+
+    Note over Client,Database: 🔐 AUTHENTICATION & REQUEST PROCESSING
+    Client->>Auth: HTTP Request with JWT Token
+    Auth->>Auth: Validate JWT Token
+    
+    alt Valid Token
+        Auth->>Controller: Allow request to proceed
+    else Invalid Token
+        Auth->>Client: 401 Unauthorized
+    end
+
+    Note over Client,Database: 📋 PRODUCT OPERATIONS
+    alt GET All Products
+        Client->>Controller: GET /api/Products
+        Controller->>Interface: GetAllAsync()
+        Interface->>Repo: GetAllAsync()
+        Repo->>DbContext: Products.AsNoTracking().ToListAsync()
+        DbContext->>Database: SELECT * FROM Products
+        Database->>DbContext: Return Product entities
+        DbContext->>Repo: IEnumerable<Product>
+        Repo->>Interface: IEnumerable<Product>
+        Interface->>Controller: IEnumerable<Product>
+        Controller->>Conversion: FromEntity(null, products)
+        Conversion->>Controller: (null, ProductDTO list)
+        Controller->>Client: 200 OK + ProductDTO array
+    else GET Product by ID
+        Client->>Controller: GET /api/Products/{id}
+        Controller->>Interface: FindByIdAsync(id)
+        Interface->>Repo: FindByIdAsync(id)
+        Repo->>DbContext: Products.FindAsync(id)
+        DbContext->>Database: SELECT * FROM Products WHERE Id = @id
+        Database->>DbContext: Product entity or null
+        DbContext->>Repo: Product or null
+        Repo->>Interface: Product or null
+        Interface->>Controller: Product or null
+        
+        alt Product Found
+            Controller->>Conversion: FromEntity(product, null)
+            Conversion->>Controller: (ProductDTO, null)
+            Controller->>Client: 200 OK + ProductDTO
+        else Product Not Found
+            Controller->>Client: 404 Not Found
+        end
+    else CREATE Product
+        Client->>Controller: POST /api/Products
+        Controller->>Controller: Validate ProductDTO
+        alt Valid Data
+            Controller->>Conversion: ToEntity(productDTO)
+            Conversion->>Controller: Product entity
+            Controller->>Interface: CreateAsync(entity)
+            Interface->>Repo: CreateAsync(entity)
+            Repo->>Repo: Check duplicate name
+            Repo->>DbContext: Products.Add(entity)
+            DbContext->>Database: INSERT INTO Products
+            Database->>DbContext: Success/Error
+            DbContext->>Repo: Entity with ID
+            Repo->>Logger: LogExceptions(ex) if error
+            Repo->>Interface: Response object
+            Interface->>Controller: Response object
+            Controller->>Client: 200 OK + Response or 400 Bad Request
+        else Invalid Data
+            Controller->>Client: 400 Bad Request
+        end
+    else UPDATE Product
+        Client->>Controller: PUT /api/Products
+        Controller->>Controller: Validate ProductDTO
+        alt Valid Data
+            Controller->>Conversion: ToEntity(productDTO)
+            Conversion->>Controller: Product entity
+            Controller->>Interface: UpdateAsync(entity)
+            Interface->>Repo: UpdateAsync(entity)
+            Repo->>Repo: FindByIdAsync(entity.Id)
+            Repo->>DbContext: Products.Update(entity)
+            DbContext->>Database: UPDATE Products SET...
+            Database->>DbContext: Success/Error
+            DbContext->>Repo: Success/Error
+            Repo->>Logger: LogExceptions(ex) if error
+            Repo->>Interface: Response object
+            Interface->>Controller: Response object
+            Controller->>Client: 200 OK + Response or 400 Bad Request
+        else Invalid Data
+            Controller->>Client: 400 Bad Request
+        end
+    else DELETE Product
+        Client->>Controller: DELETE /api/Products
+        Controller->>Controller: Validate ProductDTO
+        alt Valid Data
+            Controller->>Conversion: ToEntity(productDTO)
+            Conversion->>Controller: Product entity
+            Controller->>Interface: DeleteAsync(entity)
+            Interface->>Repo: DeleteAsync(entity)
+            Repo->>Repo: FindByIdAsync(entity.Id)
+            Repo->>DbContext: Products.Remove(product)
+            DbContext->>Database: DELETE FROM Products WHERE Id = @id
+            Database->>DbContext: Success/Error
+            DbContext->>Repo: Success/Error
+            Repo->>Logger: LogExceptions(ex) if error
+            Repo->>Interface: Response object
+            Interface->>Controller: Response object
+            Controller->>Client: 200 OK + Response or 404 Not Found
+        else Invalid Data
+            Controller->>Client: 400 Bad Request
+        end
+    end
+
+    Note over Client,Database: 🚨 ERROR HANDLING (if any operation fails)
+    alt Database Error
+        Repo->>Logger: LogExceptions(ex)
+        Logger->>Logger: Log to file/console/debugger
+        Repo->>Interface: Error response
+        Interface->>Controller: Error response
+        Controller->>Client: 400/500 Error
+    else Business Logic Error
+        Repo->>Interface: Business error response
+        Interface->>Controller: Business error response
+        Controller->>Client: 400 Bad Request
+    else Validation Error
+        Controller->>Client: 400 Bad Request
+    end
+
+    Note over Client,Database: ✅ SUCCESS RESPONSE
+    Controller->>Client: Return appropriate HTTP status + data
+```
+
 ### 1. Service Startup Flow
 
 ```mermaid
