@@ -16,7 +16,7 @@ namespace ProductApi.Application.DTOs.Conversions
         public static (ProductDTO?, IEnumerable<ProductDTO>?) FromEntity(Product product, IEnumerable<Product>? products)
         {
             // return Single
-            if (product is null || products is null)
+            if (product is not null || products is null)
             {
                 var singleProduct = new ProductDTO(
                     product!.Id,
@@ -34,7 +34,7 @@ namespace ProductApi.Application.DTOs.Conversions
                 var _products = products.Select(p => new ProductDTO(p.Id, p.Name, p.Price, p.Quantity)).ToList();
                 return (null, _products);
             }
-
+ 
             return (null, null);
 
         }
