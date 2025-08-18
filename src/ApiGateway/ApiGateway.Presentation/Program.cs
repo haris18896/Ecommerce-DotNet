@@ -3,14 +3,15 @@ using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using SharedLibrary.DependencyInjection;
 using SharedLibrary.Middleware;
+using MMLib.SwaggerForOcelot;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services
 builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
-
 builder.Services.AddOpenApi();
 builder.Services.AddOcelot().AddCacheManager(x => x.WithDictionaryHandle());
+builder.Services.AddSwaggerForOcelot(builder.Configuration);
 
 JWTAuthenticationScheme.AddJwtAuthenticationScheme(builder.Services, builder.Configuration);
 
@@ -36,8 +37,16 @@ app.MapOpenApi();
 // Attach custom middleware before Ocelot
 app.UseMiddleware<AttachSignatureToRequest>();
 
+
+
 // Ocelot should be last in the pipeline
 await app.UseOcelot();
+
+app.UseSwaggerForOcelotUI(opt =>
+{
+    // This internal endpoint serves the transformed docs list:
+    opt.PathToSwaggerGenerator = "/swagger/docs";
+});
 
 app.Run();
 
