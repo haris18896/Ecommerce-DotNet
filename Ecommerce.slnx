@@ -3,6 +3,15 @@
   <Folder Name="/src/">
     <Project Path="src/SharedLibrary/SharedLibrary.csproj" />
   </Folder>
+  <Folder Name="/src/ApiGateway/">
+    <Project Path="src/ApiGateway/ApiGateway.Presentation/ApiGateway.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/src/AuthenticationAPI/">
+    <Project Path="src/AuthenticationAPI/AuthenticationApi.Appplication/AuthenticationApi.Appplication.csproj" />
+    <Project Path="src/AuthenticationAPI/AuthenticationApi.Domain/AuthenticationApi.Domain.csproj" />
+    <Project Path="src/AuthenticationAPI/AuthenticationApi.Infrustructure/AuthenticationApi.Infrustructure.csproj" />
+    <Project Path="src/AuthenticationAPI/AuthenticationApi.Presentation/AuthenticationApi.Presentation.csproj" />
+  </Folder>
   <Folder Name="/src/OrderApi/">
     <Project Path="src/OrderApi/OrderApi.Application/OrderApi.Application.csproj" />
     <Project Path="src/OrderApi/OrderApi.Domain/OrderApi.Domain.csproj" />
