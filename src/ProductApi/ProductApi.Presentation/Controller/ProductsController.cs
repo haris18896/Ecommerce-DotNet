@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Storage.Json;
@@ -10,9 +11,11 @@ namespace ProductApi.Presentation.Controller
 {
     [Microsoft.AspNetCore.Mvc.Route("api/[controller]")]
     [ApiController]
+
     public class ProductsController(IProduct productInterface) : ControllerBase
     {
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> GetProducts()
         {
             // Get all products from service Repo
@@ -28,6 +31,7 @@ namespace ProductApi.Presentation.Controller
         }
 
         [HttpGet("id:int")]
+        [AllowAnonymous]
         public async Task<ActionResult<ProductDTO>> GetProduct(int id)
         {
             // get single product from repo
@@ -42,6 +46,7 @@ namespace ProductApi.Presentation.Controller
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Response>> CreateProduct(ProductDTO product)
         {
             // Validate the incoming product DTO
@@ -55,6 +60,7 @@ namespace ProductApi.Presentation.Controller
         }
 
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Response>> UpdateProduct(ProductDTO product)
         {
             // Validate the incoming product DTO
@@ -68,6 +74,7 @@ namespace ProductApi.Presentation.Controller
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<Response>> DeleteProduct(ProductDTO product)
         {
             // Validate the incoming product DTO
